@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "NHKプラス like YouTube",
-  "description": "NHKプラスでYouTube風ショートカットキーを使えるようにするChrome拡張機能です。",
+  "description": "NHKプラスでYouTube風ショートカットキーを使えるようにします。",
   "version": "1.0.0",
   "icons": {
     "16": "icon16.png",
