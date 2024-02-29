@@ -12,7 +12,7 @@
     {
       "matches": ["https://plus.nhk.jp/watch/*"],
       "js": ["main.js"],
-			"all_frames": true
+      "all_frames": true
     }
   ]
 }
