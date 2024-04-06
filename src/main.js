@@ -1,9 +1,13 @@
 // シーク秒数
-const SEEK_DURATION_SEC = 10
+const SEEK_DURATION_SEC = 10;
 // 音量増減幅
-const VOLUME_CHANGE_AMOUNT = 0.05
+const VOLUME_CHANGE_AMOUNT = 0.05;
 // フルスクリーン状態
-let isFullScreen = false
+let isFullScreen = false;
+// 再生エリアのショートカットキー登録状態
+let isVideoShortcutRegistered = false;
+// ロゴの置き換え状態
+let isLogoReplaced = false;
 
 /**
  * ショートカットキーのイベント登録
@@ -50,20 +54,62 @@ const registerShortcutKeys = (videoElem) => {
 }
 
 /**
- * ページを定期監視し、Video要素が利用可能になったらイベント登録を行う
+ * Videoに対するショートカットキーを登録する
  */
-const watchPageAndInitialize = () => {
-    let isReady = false
-    setInterval(() => {
-        if (!isReady) {
-            video = document.querySelector('video')
-            if (video != null) {
-                registerShortcutKeys(video)
-                isReady = true
-            }
-        }
-    }, 500)
+const initializeVideoShortcuts = () => {
+    console.log('[NLY] searching for video')
+    const video = document.querySelector('video');
+    if (video) {
+        registerShortcutKeys(video);
+        isVideoShortcutRegistered = true;
+        console.log('[NLY] loaded')
+    }
 }
 
-// 実行
-watchPageAndInitialize()
+/**
+ * clickイベントで遷移する左上のロゴを、普通のリンクで置き換える
+ * こうすることでブラウザの通常のクリック挙動が使えるようになり、ctrl+clickとかが効くようになる
+ */
+const replaceLogoWithNormalLink = () => {
+    console.log('[NLY] searching for logo')
+    const logoDivs = document.getElementsByClassName('global_header--logo');
+
+    for (let logo of logoDivs) {
+        const clonedElement = logo.cloneNode(true);
+        const wrapperAnchor = document.createElement('a');
+        wrapperAnchor.appendChild(clonedElement);
+        wrapperAnchor.href = '/';
+        logo.parentNode.replaceChild(wrapperAnchor, logo);
+
+        isLogoReplaced = true;
+        console.log('[NLY] logo replaced')
+    }
+};
+
+/**
+ * DOM監視して変更があれば初期化を試みる
+ */
+const observeDOMForVideo = () => {
+    const observer = new MutationObserver((mutations, obs) => {
+        if (!isVideoShortcutRegistered) {
+            initializeVideoShortcuts();
+        }
+        if (!isLogoReplaced) {
+            replaceLogoWithNormalLink();
+        }
+
+        // 一度初期化に成功したら以後の監視は不要なので停止
+        if (isVideoShortcutRegistered && isLogoReplaced) {
+            obs.disconnect();
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true, // 直接の子要素
+        subtree: true, // すべての子孫要素
+        attributes: false
+    });
+}
+
+// DOM監視開始
+observeDOMForVideo();
