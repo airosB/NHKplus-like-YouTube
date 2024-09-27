@@ -1,3 +1,5 @@
+console.log(11111111111111);
+
 // シーク秒数
 const SEEK_DURATION_SEC = 10;
 // 音量増減幅

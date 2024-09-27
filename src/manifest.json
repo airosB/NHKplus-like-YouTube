@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "NHKプラス クイックコントロール",
   "description": "NHKプラスでYouTube風ショートカットキーを使えるようにします。",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
@@ -10,7 +10,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://plus.nhk.jp/watch/*"],
+      "matches": [
+        "https://plus.nhk.jp/watch/*",
+        "https://plus.nhk.jp/auth/*"
+      ],
       "js": ["main.js"],
       "all_frames": true
     }
