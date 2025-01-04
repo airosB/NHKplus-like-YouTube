@@ -1,5 +1,3 @@
-console.log(11111111111111);
-
 // シーク秒数
 const SEEK_DURATION_SEC = 10;
 // 音量増減幅
@@ -113,5 +111,31 @@ const observeDOMForVideo = () => {
     });
 }
 
+/**
+ * 番組の終わりまで視聴するとVideo要素が削除されてコントロールが効かなくなる問題の対策
+ * Videoの削除を監視して再登録ルートにのせる
+ */
+const observeVideoElementRemoving = () => {
+    // ページ内のvideo要素が存在するかどうかを監視する
+    let lastVideoCount = document.getElementsByTagName('video').length;
+
+    // 定期的にvideo要素の数をチェックして削除されていたらフラグを折る
+    setInterval(() => {
+        const currentVideoCount = document.getElementsByTagName('video').length;
+        if (currentVideoCount < lastVideoCount) {
+            isVideoShortcutRegistered = false;
+            observeDOMForVideo();
+        }
+        lastVideoCount = currentVideoCount;
+    }, 100);
+}
+
 // DOM監視開始
 observeDOMForVideo();
+observeVideoElementRemoving();
+
+
+
+
+
+
