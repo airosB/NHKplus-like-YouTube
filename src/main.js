@@ -25,15 +25,6 @@ const registerShortcutKeys = (videoElem) => {
 			e.preventDefault()
 			e.stopPropagation()
 			return false
-		} else if (e.key === 'f') {
-			if (isFullScreen) {
-				videoElem.webkitExitFullScreen()
-				isFullScreen = false
-			} else {
-				videoElem.webkitRequestFullScreen()
-				isFullScreen = true
-			}
-			e.preventDefault()
 		} else if (e.key === 'ArrowUp') {
             const prev = videoElem.volume
 			videoElem.volume = Math.min(1, prev + VOLUME_CHANGE_AMOUNT)
@@ -42,6 +33,15 @@ const registerShortcutKeys = (videoElem) => {
 			const prev = videoElem.volume
             videoElem.volume = Math.max(0, prev - VOLUME_CHANGE_AMOUNT)
 			e.preventDefault()
+        } else if (e.key === 'f') {
+            if (isFullScreen) {
+                document.webkitExitFullscreen()
+                isFullScreen = false
+            } else {
+                videoElem.webkitRequestFullscreen()
+                isFullScreen = true
+            }
+            e.preventDefault()
         } else if (e.key === ' ') {
             if (videoElem.paused) {
                 videoElem.play()
@@ -57,12 +57,12 @@ const registerShortcutKeys = (videoElem) => {
  * Videoに対するショートカットキーを登録する
  */
 const initializeVideoShortcuts = () => {
-    console.log('[NLY] searching for video')
+    console.log('[NLY] searching for video');
     const video = document.querySelector('video');
     if (video) {
         registerShortcutKeys(video);
         isVideoShortcutRegistered = true;
-        console.log('[NLY] loaded')
+        console.log('[NLY] loaded');
     }
 }
 
@@ -71,7 +71,7 @@ const initializeVideoShortcuts = () => {
  * こうすることでブラウザの通常のクリック挙動が使えるようになり、ctrl+clickとかが効くようになる
  */
 const replaceLogoWithNormalLink = () => {
-    console.log('[NLY] searching for logo')
+    console.log('[NLY] searching for logo');
     const logoDivs = document.getElementsByClassName('global_header--logo');
 
     for (let logo of logoDivs) {
@@ -82,7 +82,7 @@ const replaceLogoWithNormalLink = () => {
         logo.parentNode.replaceChild(wrapperAnchor, logo);
 
         isLogoReplaced = true;
-        console.log('[NLY] logo replaced')
+        console.log('[NLY] logo replaced');
     }
 };
 
@@ -123,6 +123,7 @@ const observeVideoElementRemoving = () => {
     setInterval(() => {
         const currentVideoCount = document.getElementsByTagName('video').length;
         if (currentVideoCount < lastVideoCount) {
+            console.log('[NLY] video');
             isVideoShortcutRegistered = false;
             observeDOMForVideo();
         }
